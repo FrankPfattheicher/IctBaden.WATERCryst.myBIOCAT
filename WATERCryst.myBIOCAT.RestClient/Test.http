@@ -1,0 +1,4 @@
+
+GET https://appapi.watercryst.com/v1/state
+Accept: application/json
+X-API-KEY: 5fJKtdIz6AXLENYKNaCBYzDG6lNdZveQloPtfReHz3VrUhAvBa-DHFTZXY6RY5x38VJ9PFumRGBk7l53wR4hXg
