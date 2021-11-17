@@ -21,9 +21,13 @@ namespace WATERCryst.myBIOCAT.App
             var logger = loggerFactory.CreateLogger("myBIOCAT");            
             
             var apiKey = Environment.GetEnvironmentVariable("myBIOCAT") ?? "";
-            var client = new RestClient.RestClient(logger, apiKey);
+            using var client = new RestClient.RestClient(logger, apiKey);
     
-            var state = client.GetDeviceState();
+            var state = client.GetCurrentDeviceState();
+            Console.WriteLine(state?.Online);
+            
+            Console.ReadLine();
+            Console.WriteLine("done.");
         }
     
     }
