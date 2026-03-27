@@ -1,73 +1,58 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+namespace WATERCryst.myBIOCAT.RestClient;
 
-namespace WATERCryst.myBIOCAT.RestClient
+public class CallbackServer : IDisposable
 {
-    internal static class Api
+    private readonly ILogger _logger;
+    private readonly RestClient _client;
+    private readonly int _port;
+    private readonly WebApplication _app;
+
+    public CallbackServer(ILogger logger, RestClient client, int port)
     {
-        public static void Main() {}
+        _logger = logger;
+        _client = client;
+        _port = port;
+            
+        var builder = WebApplication.CreateBuilder();
+        builder.Services.AddSingleton(logger);
+        builder.Services.AddSingleton(client);
+        builder.Services.AddControllers();
+            
+        _app = builder.Build();
+
+        if (_app.Environment.IsDevelopment())
+        {
+            _app.UseDeveloperExceptionPage();
+        }
+
+        _app.MapGet("/myBIOCAT", CallbackHandler);
+
+        //_app.UseHttpsRedirection();
+        _app.MapControllers();
     }
-    
-    
-    public class CallbackServer : IDisposable
+
+    private Task CallbackHandler(HttpContext context)
     {
-        private readonly ILogger _logger;
-        private readonly RestClient _client;
-        private readonly int _port;
-        private readonly WebApplication _app;
+        _logger.LogTrace("Callback");
+        _client.OnCallback(context.Request.Body);
+        return Task.CompletedTask;
+    }
 
-        public CallbackServer(ILogger logger, RestClient client, int port)
+    public void Start()
+    {
+        _app.RunAsync($"http://*: {_port}");
+    }
+
+    public void Dispose()
+    {
+        try
         {
-            _logger = logger;
-            _client = client;
-            _port = port;
-            
-            var builder = WebApplication.CreateBuilder();
-            builder.Services.AddSingleton(logger);
-            builder.Services.AddSingleton(client);
-            builder.Services.AddControllers();
-            
-            _app = builder.Build();
-
-            if (_app.Environment.IsDevelopment())
-            {
-                _app.UseDeveloperExceptionPage();
-            }
-
-            _app.MapGet("/myBIOCAT", CallbackHandler);
-
-            //_app.UseHttpsRedirection();
-            _app.MapControllers();
+            _app.StopAsync().Wait();
         }
-
-        private Task CallbackHandler(HttpContext context)
+        catch
         {
-            _logger.LogTrace("Callback");
-            _client.OnCallback(context.Request.Body);
-            return Task.CompletedTask;
+            // ignore
         }
-
-        public void Start()
-        {
-            _app.Run($"http://*: {_port}");
-        }
-
-        public void Dispose()
-        {
-            try
-            {
-                _app.StopAsync().Wait();
-            }
-            catch
-            {
-                // ignore
-            }
-        }
+    }
         
-    }
 }

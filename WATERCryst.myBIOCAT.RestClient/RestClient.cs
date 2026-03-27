@@ -1,9 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
+
 // ReSharper disable TemplateIsNotCompileTimeConstantProblem
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -115,11 +112,11 @@ namespace WATERCryst.myBIOCAT.RestClient
         public bool UnpauseLeakageProtection() => ExecuteGetRequest("leakageProtection/unpause");
 
         /// <summary>
-        /// Starts the micro-leakage measurement to check the leak- tightness of the piping.
-        /// This allows the detection of micro- leaks such as dripping taps or pipe fittings.
-        /// For this measurements, water supply is briefly shut off.
-        /// An unexpected water consumption during the measuring process,
-        /// e.g. flushing the toilet or opening a tap, is automatically detected and the water supply is
+        /// Starts the micro-leakage measurement to check the leak-tightness of the piping.
+        /// This allows the detection of micro-leaks such as dripping taps or pipe fittings.
+        /// For this measurement, the water supply is briefly shut off.
+        /// Unexpected water consumption during the measuring process,
+        /// e.g., flushing the toilet or opening a tap, is automatically detected, and the water supply is
         /// restored within a few seconds. However, the test fails and the API call has to be repeated.
         /// Notice
         /// If you use a drip irrigation system in your household, this can be detected as a micro leak.
@@ -136,10 +133,10 @@ namespace WATERCryst.myBIOCAT.RestClient
         public bool LoadCurrentMeasurementData() => ExecuteGetRequest("measurements/now");
 
         /// <summary>
-        /// Starts the self test routine. Automatically checks all actuators and sensors and fills the active unit with drinking water over a defined flushing time.
+        /// Starts the self-test routine. Automatically checks all actuators and sensors and fills the active unit with drinking water over a defined flushing time.
         /// Requires 2 minutes for completion.
         /// The device will return to water treatment if no errors could be detected. In the case of errors, the current error will be reported via the webhook endpoint.
-        /// Additionally it can be queried at any time with GET v1/state.
+        /// Additionally, it can be queried at any time with GET v1/state.
         /// </summary>
         /// <returns></returns>
         public bool StartSelfTest() => ExecuteGetRequest("selftest");

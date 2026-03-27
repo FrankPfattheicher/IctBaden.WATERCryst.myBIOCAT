@@ -1,12 +1,11 @@
 using System.Text.Json.Serialization;
 
-namespace WATERCryst.myBIOCAT.RestClient
+namespace WATERCryst.myBIOCAT.RestClient;
+
+// ReSharper disable once ClassNeverInstantiated.Global
+public class DeviceMode
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
-    public class DeviceMode
-    {
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public DeviceModes Id { get; set; }
-        public string? Name { get; set; }
-    }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public DeviceModes Id { get; set; }
+    public string? Name { get; set; }
 }
